@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: huge-error-
+  annotations:
+    pipelinesascode.tekton.dev/on-event: "[pull_request]"
+    pipelinesascode.tekton.dev/on-target-branch: "[main]"
+spec:
+  pipelineSpec:
+    tasks:
+      - name: explode-logs
+        taskSpec:
+          steps:
+            - name: spam
+              image: busybox
+              script: |
+                for i in $(seq 1 20000); do
+                  echo "ERROR-LINE-$i"
+                done
+                exit 1
+
